@@ -68,7 +68,10 @@ final class MemoStore {
             source: .manual,
             aiStatus: .none,
             aiSuggestedTags: [],
-            aiSuggestedCategory: nil
+            aiSuggestedCategory: nil,
+            aiConfidence: nil,
+            aiProvider: .none,
+            aiError: nil
         )
         notes.insert(memo, at: 0)
         persist()
@@ -88,6 +91,44 @@ final class MemoStore {
 
     func deleteMemo(id: Memo.ID) {
         notes.removeAll { $0.id == id }
+        persist()
+    }
+
+    func markMemoAIAnalysisPending(id: Memo.ID) {
+        guard let index = notes.firstIndex(where: { $0.id == id }) else { return }
+        notes[index].aiStatus = .pending
+        notes[index].aiError = nil
+        notes[index].updatedAt = Date()
+        persist()
+    }
+
+    func applyMemoAISuggestions(id: Memo.ID, result: MemoAIResult) {
+        guard let index = notes.firstIndex(where: { $0.id == id }) else { return }
+        notes[index].aiStatus = .done
+        notes[index].aiSuggestedTags = Memo.normalizedTags(result.tags)
+        notes[index].aiSuggestedCategory = result.category
+        notes[index].aiConfidence = result.confidence
+        notes[index].aiProvider = result.provider
+        notes[index].aiError = nil
+        notes[index].updatedAt = Date()
+        persist()
+    }
+
+    func markMemoAIAnalysisFailed(id: Memo.ID, error: String) {
+        guard let index = notes.firstIndex(where: { $0.id == id }) else { return }
+        notes[index].aiStatus = .failed
+        notes[index].aiError = error
+        notes[index].updatedAt = Date()
+        persist()
+    }
+
+    func acceptAISuggestions(id: Memo.ID) {
+        guard let index = notes.firstIndex(where: { $0.id == id }) else { return }
+        if let suggestedCategory = notes[index].aiSuggestedCategory {
+            notes[index].category = suggestedCategory
+        }
+        notes[index].tags = Memo.normalizedTags(notes[index].tags + notes[index].aiSuggestedTags)
+        notes[index].updatedAt = Date()
         persist()
     }
 

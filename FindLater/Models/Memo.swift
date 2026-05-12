@@ -20,6 +20,13 @@ enum MemoAIStatus: String, Codable, CaseIterable, Sendable {
     case failed
 }
 
+enum MemoAIProvider: String, Codable, Sendable {
+    case none
+    case mock
+    case codexCLI = "codex-cli"
+    case localLLM = "local-llm"
+}
+
 struct Memo: Identifiable, Codable, Equatable, Sendable {
     var id: UUID
     var rawText: String
@@ -32,6 +39,9 @@ struct Memo: Identifiable, Codable, Equatable, Sendable {
     var aiStatus: MemoAIStatus
     var aiSuggestedTags: [String]
     var aiSuggestedCategory: MemoCategory?
+    var aiConfidence: Double?
+    var aiProvider: MemoAIProvider
+    var aiError: String?
 
     init(
         id: UUID = UUID(),
@@ -44,7 +54,10 @@ struct Memo: Identifiable, Codable, Equatable, Sendable {
         source: MemoSource = .manual,
         aiStatus: MemoAIStatus = .none,
         aiSuggestedTags: [String] = [],
-        aiSuggestedCategory: MemoCategory? = nil
+        aiSuggestedCategory: MemoCategory? = nil,
+        aiConfidence: Double? = nil,
+        aiProvider: MemoAIProvider = .none,
+        aiError: String? = nil
     ) {
         self.id = id
         self.rawText = rawText
@@ -57,6 +70,44 @@ struct Memo: Identifiable, Codable, Equatable, Sendable {
         self.aiStatus = aiStatus
         self.aiSuggestedTags = aiSuggestedTags
         self.aiSuggestedCategory = aiSuggestedCategory
+        self.aiConfidence = aiConfidence
+        self.aiProvider = aiProvider
+        self.aiError = aiError
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case rawText
+        case title
+        case category
+        case tags
+        case createdAt
+        case updatedAt
+        case source
+        case aiStatus
+        case aiSuggestedTags
+        case aiSuggestedCategory
+        case aiConfidence
+        case aiProvider
+        case aiError
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        rawText = try container.decode(String.self, forKey: .rawText)
+        title = try container.decode(String.self, forKey: .title)
+        category = try container.decode(MemoCategory.self, forKey: .category)
+        tags = try container.decode([String].self, forKey: .tags)
+        createdAt = try container.decode(Date.self, forKey: .createdAt)
+        updatedAt = try container.decode(Date.self, forKey: .updatedAt)
+        source = try container.decode(MemoSource.self, forKey: .source)
+        aiStatus = try container.decodeIfPresent(MemoAIStatus.self, forKey: .aiStatus) ?? .none
+        aiSuggestedTags = try container.decodeIfPresent([String].self, forKey: .aiSuggestedTags) ?? []
+        aiSuggestedCategory = try container.decodeIfPresent(MemoCategory.self, forKey: .aiSuggestedCategory)
+        aiConfidence = try container.decodeIfPresent(Double.self, forKey: .aiConfidence)
+        aiProvider = try container.decodeIfPresent(MemoAIProvider.self, forKey: .aiProvider) ?? .none
+        aiError = try container.decodeIfPresent(String.self, forKey: .aiError)
     }
 
     static func makeTitle(from rawText: String) -> String {

@@ -133,7 +133,8 @@ struct BrowseView: View {
             .navigationTitle("탐색")
             .sheet(item: $selectedMemo) { memo in
                 MemoDetailView(
-                    memo: memo,
+                    store: store,
+                    memoID: memo.id,
                     onDelete: {
                         store.deleteMemo(id: memo.id)
                         selectedMemo = nil

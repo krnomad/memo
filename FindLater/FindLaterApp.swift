@@ -4,10 +4,15 @@ import SwiftUI
 struct FindLaterApp: App {
     @State private var store = MemoStore()
     private let launchConfiguration = LaunchConfiguration.current
+    private let aiConfiguration = AIConfiguration.current
 
     var body: some Scene {
         WindowGroup {
-            ContentView(store: store, launchConfiguration: launchConfiguration)
+            ContentView(
+                store: store,
+                launchConfiguration: launchConfiguration,
+                aiConfiguration: aiConfiguration
+            )
                 .background(MullTheme.paper)
                 .onAppear {
                     if launchConfiguration.resetStore {

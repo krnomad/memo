@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		06F18863D26BACCB72DD264D /* MemoComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6FCA6270C5EF416B018B520 /* MemoComponents.swift */; };
+		A1B2C3D4E5F60718293A4B5C /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5061728394A5B6C /* AIService.swift */; };
+		A2B3C4D5E6F708192A3B4C5D /* AIConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F60718293A4B5C6D /* AIConfiguration.swift */; };
+		A8B9C0D1E2F3041526374859 /* NoteSearchService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8C9D0E1F203142536475869 /* NoteSearchService.swift */; };
 		190A83309EE602279F862A1F /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0265FB1E055192CA0AACA91 /* BrowseView.swift */; };
 		2081EB1D782DD82877312098 /* MemoStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A066FBC2A87E49EFDD275060 /* MemoStoreTests.swift */; };
 		3A5A6E358E51FF77FEAC91E2 /* FindLaterUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D319D87DF9DF7A954718FD /* FindLaterUITests.swift */; };
@@ -52,6 +55,9 @@
 		A0265FB1E055192CA0AACA91 /* BrowseView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BrowseView.swift; sourceTree = "<group>"; };
 		A066FBC2A87E49EFDD275060 /* MemoStoreTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MemoStoreTests.swift; sourceTree = "<group>"; };
 		A2B6EE41C87874678F098154 /* ComposeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ComposeView.swift; sourceTree = "<group>"; };
+		B2C3D4E5F60718293A4B5C6D /* AIConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIConfiguration.swift; sourceTree = "<group>"; };
+		B1C2D3E4F5061728394A5B6C /* AIService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		B8C9D0E1F203142536475869 /* NoteSearchService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NoteSearchService.swift; sourceTree = "<group>"; };
 		B6FCA6270C5EF416B018B520 /* MemoComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MemoComponents.swift; sourceTree = "<group>"; };
 		D2EDAF2AA714B49A892CEB3F /* Memo.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Memo.swift; sourceTree = "<group>"; };
 		D7529FF8EC5C7ABE11352674 /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -110,11 +116,22 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		C1D2E3F40516273849A5B6C7 /* AI */ = {
+			isa = PBXGroup;
+			children = (
+				B2C3D4E5F60718293A4B5C6D /* AIConfiguration.swift */,
+				B1C2D3E4F5061728394A5B6C /* AIService.swift */,
+			);
+			name = AI;
+			path = AI;
+			sourceTree = "<group>";
+		};
 		358865EBEEEB276CD56023B2 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				D2EDAF2AA714B49A892CEB3F /* Memo.swift */,
 				4A0F5EF67134E85FF86387F4 /* MemoStore.swift */,
+				B8C9D0E1F203142536475869 /* NoteSearchService.swift */,
 			);
 			name = Models;
 			path = Models;
@@ -171,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				358865EBEEEB276CD56023B2 /* Models */,
+				C1D2E3F40516273849A5B6C7 /* AI */,
 				30A509BE53B14E7F6B353E36 /* Views */,
 				1F6CC37F5670700398F98B4C /* FindLaterApp.swift */,
 				8A5460F3F3C2CD1BC19708C4 /* Theme.swift */,
@@ -308,6 +326,9 @@
 				B9AF5A5453F80CFF216906FB /* Theme.swift in Sources */,
 				CD742725CE671CA616490D14 /* Memo.swift in Sources */,
 				CABD140894F1BCB6A4A2F078 /* MemoStore.swift in Sources */,
+				A8B9C0D1E2F3041526374859 /* NoteSearchService.swift in Sources */,
+				A2B3C4D5E6F708192A3B4C5D /* AIConfiguration.swift in Sources */,
+				A1B2C3D4E5F60718293A4B5C /* AIService.swift in Sources */,
 				73036AB2081DDF3683F07B0A /* ContentView.swift in Sources */,
 				06F18863D26BACCB72DD264D /* MemoComponents.swift in Sources */,
 				CE03C6B2B0B2F437094FCFC3 /* HomeView.swift in Sources */,

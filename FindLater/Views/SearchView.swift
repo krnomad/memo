@@ -5,9 +5,14 @@ struct SearchView: View {
     @Binding var activeSheet: ActiveSheet?
     @State private var query: String
     @State private var selectedMemo: Memo?
+    @State private var aiSearchResult: SearchAIResult?
+    @State private var isAISearching = false
+    @State private var aiSearchFailed = false
     @FocusState private var searchFocused: Bool
 
     private let recentSearches = ["Growise", "블루스크린", "공기압", "MVP"]
+    private let aiService = AIService()
+    private let searchService = NoteSearchService()
 
     init(store: MemoStore, activeSheet: Binding<ActiveSheet?>, initialQuery: String = "") {
         self.store = store
@@ -16,7 +21,11 @@ struct SearchView: View {
     }
 
     private var results: [Memo] {
-        store.search(query)
+        searchService.search(notes: store.notes, query: query, aiResult: aiSearchResult)
+    }
+
+    private var knownTags: [String] {
+        Memo.normalizedTags(store.notes.flatMap(\.tags))
     }
 
     var body: some View {
@@ -75,10 +84,16 @@ struct SearchView: View {
                             }
 
                             AIBanner(
-                                title: "자연어 검색 예정",
-                                message: "지금은 원문, 태그, 카테고리를 직접 검색합니다."
+                                title: "AI 검색 준비됨",
+                                message: "자연어 검색어를 태그 후보로 바꾸고, 실패하면 일반 검색으로 돌아갑니다."
                             )
                         } else {
+                            AISearchStatusView(
+                                isSearching: isAISearching,
+                                failed: aiSearchFailed,
+                                result: aiSearchResult
+                            )
+
                             Text("\(results.count)개의 결과")
                                 .font(.footnote)
                                 .foregroundStyle(MullTheme.inkTertiary)
@@ -99,10 +114,12 @@ struct SearchView: View {
                                 }
                             }
 
-                            AIBanner(
-                                title: "AI 검색 예정",
-                                message: "“견적 다시 봐야 하는 일”처럼 묻는 검색은 아직 동작하지 않습니다."
-                            )
+                            if aiSearchFailed {
+                                AIBanner(
+                                    title: "AI 검색을 사용할 수 없습니다",
+                                    message: "현재는 원문, 제목, 태그, 카테고리 기반 검색 결과를 보여줍니다."
+                                )
+                            }
                         }
                     }
                     .padding(.horizontal, 16)
@@ -142,7 +159,8 @@ struct SearchView: View {
             .navigationTitle("검색")
             .sheet(item: $selectedMemo) { memo in
                 MemoDetailView(
-                    memo: memo,
+                    store: store,
+                    memoID: memo.id,
                     onDelete: {
                         store.deleteMemo(id: memo.id)
                         selectedMemo = nil
@@ -150,7 +168,115 @@ struct SearchView: View {
                 )
                 .presentationDetents([.large])
             }
+            .task(id: query) {
+                await refreshAISearch(for: query)
+            }
         }
+    }
+
+    @MainActor
+    private func resetAISearch() {
+        aiSearchResult = nil
+        isAISearching = false
+        aiSearchFailed = false
+    }
+
+    private func refreshAISearch(for query: String) async {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            resetAISearch()
+            return
+        }
+
+        await MainActor.run {
+            isAISearching = true
+            aiSearchFailed = false
+        }
+
+        do {
+            try await Task.sleep(for: .milliseconds(220))
+            let result = try await aiService.extractSearchTags(query: trimmed, knownTags: knownTags)
+            await MainActor.run {
+                if self.query.trimmingCharacters(in: .whitespacesAndNewlines) == trimmed {
+                    aiSearchResult = result
+                    isAISearching = false
+                    aiSearchFailed = false
+                }
+            }
+        } catch is CancellationError {
+            return
+        } catch {
+            await MainActor.run {
+                if self.query.trimmingCharacters(in: .whitespacesAndNewlines) == trimmed {
+                    aiSearchResult = nil
+                    isAISearching = false
+                    aiSearchFailed = true
+                }
+            }
+        }
+    }
+}
+
+private struct AISearchStatusView: View {
+    let isSearching: Bool
+    let failed: Bool
+    let result: SearchAIResult?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 7) {
+                Image(systemName: "sparkle.magnifyingglass")
+                    .imageScale(.small)
+                Text(title)
+                    .font(.caption.weight(.semibold))
+                Spacer()
+                if isSearching {
+                    ProgressView()
+                        .controlSize(.mini)
+                        .tint(MullTheme.sage)
+                }
+            }
+            .foregroundStyle(MullTheme.sage)
+
+            if let result, !result.matchedTags.isEmpty || !result.queryTags.isEmpty {
+                FlowLayout(spacing: 6) {
+                    ForEach(result.matchedTags.prefix(6), id: \.self) { tag in
+                        Text("#\(tag)")
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(MullTheme.sage)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 5)
+                            .background(.white.opacity(0.45), in: Capsule())
+                    }
+
+                    ForEach(result.categoryHints.prefix(2), id: \.self) { category in
+                        Text(category.rawValue)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(MullTheme.sage)
+                            .padding(.horizontal, 9)
+                            .padding(.vertical, 5)
+                            .background(.white.opacity(0.45), in: Capsule())
+                    }
+                }
+            } else {
+                Text(message)
+                    .font(.callout)
+                    .foregroundStyle(MullTheme.sage)
+            }
+        }
+        .padding(14)
+        .background(MullTheme.sageSoft, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .accessibilityIdentifier("aiSearchStatus")
+    }
+
+    private var title: String {
+        if failed { return "일반 검색으로 표시" }
+        if isSearching { return "AI 검색 분석 중" }
+        return "AI 검색 보조"
+    }
+
+    private var message: String {
+        failed ? "AI 태그 추출에 실패했습니다." : "검색어를 태그 후보로 바꾸고 있습니다."
     }
 }
 

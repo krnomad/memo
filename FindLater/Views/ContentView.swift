@@ -20,13 +20,19 @@ enum ActiveSheet: Identifiable {
 struct ContentView: View {
     let store: MemoStore
     let launchConfiguration: LaunchConfiguration
+    let aiConfiguration: AIConfiguration
     @State private var selectedTab: AppTab
     @State private var activeSheet: ActiveSheet?
     private let tabOrder: [AppTab] = [.home, .browse, .search]
 
-    init(store: MemoStore, launchConfiguration: LaunchConfiguration = LaunchConfiguration()) {
+    init(
+        store: MemoStore,
+        launchConfiguration: LaunchConfiguration = LaunchConfiguration(),
+        aiConfiguration: AIConfiguration = .current
+    ) {
         self.store = store
         self.launchConfiguration = launchConfiguration
+        self.aiConfiguration = aiConfiguration
         _selectedTab = State(initialValue: launchConfiguration.initialTab)
         _activeSheet = State(initialValue: launchConfiguration.showCompose ? .compose : nil)
     }
@@ -63,6 +69,18 @@ struct ContentView: View {
                 .accessibilityIdentifier("searchTab")
         }
         .tint(MullTheme.terracotta)
+        .overlay(alignment: .top) {
+            if aiConfiguration.diagnosticsEnabled {
+                Text("AI \(aiConfiguration.diagnosticsSummary)")
+                    .font(.caption2.monospaced())
+                    .foregroundStyle(MullTheme.sage)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(MullTheme.sageSoft, in: Capsule())
+                    .padding(.top, 48)
+                    .accessibilityIdentifier("aiDiagnostics")
+            }
+        }
         .simultaneousGesture(
             DragGesture(minimumDistance: 42, coordinateSpace: .local)
                 .onEnded { value in

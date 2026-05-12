@@ -45,4 +45,34 @@ final class FindLaterUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["회의 끝나고 민지한테 데모 링크 보내기"].waitForExistence(timeout: 5))
         XCTAssertTrue(app.staticTexts["AI 자동 분류 예정"].exists)
     }
+
+    func testManualAISuggestionsRequireApply() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--reset-store"]
+        app.launch()
+
+        let card = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "노트북 블루스크린")).firstMatch
+        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        card.tap()
+
+        XCTAssertTrue(app.otherElements["memoDetail"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["requestAIButton"].waitForExistence(timeout: 5))
+        app.buttons["requestAIButton"].tap()
+
+        XCTAssertTrue(app.buttons["applyAISuggestionsButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["추천 완료"].exists)
+        app.buttons["applyAISuggestionsButton"].tap()
+
+        XCTAssertTrue(app.staticTexts["문제해결"].exists)
+        XCTAssertTrue(app.buttons["tag-블루스크린"].exists)
+    }
+
+    func testNaturalLanguageSearchFindsRelatedMemo() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["--reset-store", "--search", "지난번 노트북 고장 관련해서 적어둔 거"]
+        app.launch()
+
+        XCTAssertTrue(app.staticTexts["AI 검색 보조"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["노트북 블루스크린"].waitForExistence(timeout: 5))
+    }
 }
