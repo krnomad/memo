@@ -1,56 +1,43 @@
 # 흘려쓰기 / Find Later
 
-아무렇게나 써도 나중에 찾을 수 있는 iOS 메모앱 MVP입니다.
+아무렇게나 써도 나중에 찾을 수 있는 iOS 메모앱 MVP입니다. 현재 저장소에는 정적 웹 mockup, SwiftUI iOS 앱, AI 연동용 Node backend가 함께 들어 있습니다.
 
-현재 저장소에는 세 가지 결과물이 함께 있습니다.
+## 현재 상태
 
-- 정적 웹 mockup: GitHub Pages에서 확인하는 iPhone canvas
-- SwiftUI iOS 앱: 실제 iPhone/Simulator에 설치 가능한 MVP
-- AI 연동 계획 문서: Codex CLI backend와 app adapter 구조
+- SwiftUI 네이티브 앱 구현 완료
+- GitHub Pages용 웹 mockup 및 소개 슬라이드 유지
+- AI-ready 메모 데이터 구조 적용
+- 메모 상세에서 수동 AI 태그/카테고리 추천 요청 가능
+- 자연어 검색 보조 UI 및 로컬 scoring 구현
+- Node backend mock provider 실행 가능
+- Codex CLI runner/prompt/json 추출 레이어 구현
 
-## 현재 구현
+AI는 보조 기능입니다. 메모 원문과 사용자가 직접 입력한 태그/카테고리가 우선이며, AI 추천은 사용자가 `적용`을 누르기 전까지 실제 분류를 덮어쓰지 않습니다.
 
-- 빠른 메모 작성
-- 원문 저장
-- 수동 태그 입력
-- 수동 카테고리 선택
-- 최근 / 탐색 / 검색 탭
-- 메모 상세 보기
-- 롱프레스 삭제 메뉴
-- 검색 탭 빠른 메모 버튼
-- 좌우 스와이프 탭 이동
-- AI placeholder UI
+## 구조
 
-AI 기능은 아직 실제 호출하지 않습니다. 앱은 AI-ready 데이터 구조와 placeholder만 갖고 있습니다.
+```text
+FindLater/                 SwiftUI iOS 앱
+FindLater/AI/              AIService, provider 설정, adapter
+FindLater/Models/          Memo, MemoStore, 검색 scoring
+FindLater/Views/           최근/탐색/검색/상세/작성 화면
+FindLaterTests/            단위 테스트
+FindLaterUITests/          시뮬레이터 UI 테스트
+backend/                   Node AI backend
+doc/                       AI 연동 계획과 앱/백엔드 계약
+index.html, slide.html     정적 웹 mockup과 소개 슬라이드
+```
 
-## 웹 mockup
+## 실행
+
+웹 mockup:
 
 ```text
 https://krnomad.github.io/memo/
 https://krnomad.github.io/memo/slide.html
 ```
 
-로컬에서는 `index.html` 또는 `slide.html`을 브라우저에서 열면 됩니다.
-
-## iOS 앱
-
-Xcode project:
-
-```text
-FindLater.xcodeproj
-```
-
-주요 파일:
-
-```text
-FindLater/
-  Models/
-  Views/
-  Theme.swift
-  FindLaterApp.swift
-```
-
-테스트:
+iOS 앱 테스트:
 
 ```bash
 xcodebuild test \
@@ -59,53 +46,78 @@ xcodebuild test \
   -destination 'platform=iOS Simulator,name=iPhone 17 Pro'
 ```
 
-실기기 설치 시 현재 bundle id는 다음을 사용합니다.
+백엔드 실행:
 
-```text
-com.krnomad.FindLater
+```bash
+cd backend
+npm install
+npm start
 ```
 
-기존 `io.krnomad.cartoonvault.ios` 앱을 덮어쓰지 않습니다.
-
-## AI 연동 문서
-
-기존 포괄 문서 `doc/AI.md`는 제거하고 아래 문서로 나눴습니다.
+현재 MVP backend 기본 URL:
 
 ```text
-doc/PLAN.md          Phase, DoD, sub-agent 작업 분리
+http://100.72.125.75:8989
+```
+
+상태 확인:
+
+```bash
+curl http://100.72.125.75:8989/health
+```
+
+## Backend
+
+주요 endpoint:
+
+```text
+GET  /health
+POST /api/ai/memo/analyze
+POST /api/ai/search/extract-tags
+```
+
+환경 변수:
+
+```text
+PORT=8989
+HOST=0.0.0.0
+AI_PROVIDER=mock | codex-cli
+CODEX_TIMEOUT_MS=20000
+REQUEST_BODY_LIMIT=16kb
+```
+
+테스트:
+
+```bash
+cd backend
+npm test
+```
+
+## iOS AI Provider
+
+앱은 launch argument로 provider를 바꿀 수 있습니다.
+
+```text
+--ai-provider mock
+--ai-provider backend
+--ai-provider local
+--ai-backend-url http://100.72.125.75:8989
+--ai-diagnostics
+```
+
+기본값은 `mock`입니다. `local` provider는 명시적으로 `notImplemented`를 반환하는 stub입니다.
+
+## 문서
+
+```text
+doc/PLAN.md          Phase와 DoD
 doc/AI-WORKFLOW.md   앱-백엔드-Codex workflow
-doc/AI-BACKEND.md    Node backend/API/Codex runner 계약
-doc/AI-APP.md        iOS app AI adapter/store/UI 계약
+doc/AI-BACKEND.md    Backend API와 Codex 실행 정책
+doc/AI-APP.md        iOS adapter/store/UI 계약
 ```
 
-예정 구조:
+## 배포/설치
 
-```text
-iOS app
-  -> AIService
-  -> AIAdapter
-  -> BackendCodexAdapter
-  -> Node backend :8989
-  -> codex exec
-```
-
-원칙:
-
-- 앱은 Codex CLI를 직접 알지 않는다.
-- 메모 원문 저장이 항상 먼저다.
-- AI 실패가 메모 저장 실패로 이어지면 안 된다.
-- 추천 태그/카테고리는 사용자가 적용하기 전까지 제안으로만 둔다.
-
-## 디자인 방향
-
-- warm paper 배경
-- warm ink 텍스트
-- terracotta primary accent
-- sage AI placeholder
-- Apple Notes, Bear, Things 사이의 차분한 iOS 감성
-
-## 상태
-
-- 웹 mockup 배포 완료
-- SwiftUI MVP 실기기 설치 확인
-- AI 연동은 문서화 및 phase 분리 완료
+- GitHub Pages: `https://krnomad.github.io/memo/`
+- iOS bundle id: `com.krnomad.FindLater`
+- 기존 `io.krnomad.cartoonvault.ios` 앱을 덮어쓰지 않습니다.
