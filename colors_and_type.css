@@ -1,0 +1,256 @@
+/* =========================================================================
+   Mull · Design tokens
+   ---------------------------------------------------------------------------
+   A calm AI-powered notes app for messy thinkers. Builds on Apple's iOS
+   Human Interface Guidelines (system colors, large titles, table views,
+   safe areas) but warms the palette toward paper and ink and replaces the
+   default iOS blue tint with a single warm terracotta accent.
+
+   The token names are intentionally semantic ("ink-1", "paper", "accent")
+   rather than literal ("orange-500") so a designer reaching for the right
+   thing picks the right thing.
+   ========================================================================= */
+
+/* ---------- Webfonts ----------
+   Newsreader   — display + note titles + brand wordmark (Google Fonts)
+   Geist        — UI body, labels, lists, chrome (Google Fonts)
+   Geist Mono   — code blocks, tags, timestamps (Google Fonts)
+
+   On a real iOS app the running system would substitute SF Pro Text /
+   SF Pro Display via the -apple-system stack — that's the design source
+   of truth. Web/marketing surfaces fall back to the Google Fonts above.
+*/
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,400&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap");
+/* Pretendard — Korean companion to Geist / SF Pro. Variable, hangul + latin. */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+
+:root {
+  /* =====================================================================
+     PALETTE — raw values. Don't reach for these directly in components;
+     use the semantic tokens below.
+     ===================================================================== */
+
+  /* Paper & ink — warm neutrals, the bones of the system */
+  --paper-50:  #FBF8F2;   /* page background — softest */
+  --paper-100: #F6F2EA;   /* default app background */
+  --paper-200: #EFE9DD;   /* card / grouped section */
+  --paper-300: #E5DDCC;   /* hairline dividers */
+  --paper-400: #BFB6A2;   /* placeholder text on paper */
+
+  --ink-900: #1B1A17;     /* primary text */
+  --ink-700: #3A3833;     /* secondary text */
+  --ink-500: #6E695E;     /* tertiary text / glyphs */
+  --ink-300: #A29C8E;     /* quaternary / disabled */
+
+  /* Warm accent — terracotta. The single brand color. */
+  --terracotta-50:  #FBEFE6;
+  --terracotta-100: #F4D6BE;
+  --terracotta-300: #DC9A6A;
+  --terracotta-500: #C46A3D;   /* primary accent */
+  --terracotta-700: #8E4A28;
+  --terracotta-900: #4E2814;
+
+  /* Secondary tint — sage. Used SPARINGLY: AI-generated content, links
+     between notes, the "auto-organize" state. Never as a primary action. */
+  --sage-100: #DDE5D6;
+  --sage-300: #9AB089;
+  --sage-500: #6E8B5A;
+  --sage-700: #4A6139;
+
+  /* iOS standard system colors — retained for parity with native chrome
+     (status bar tints, destructive actions, keyboard accents). Mull
+     re-skins primary actions to terracotta but keeps these for system UI. */
+  --ios-red:    #FF3B30;
+  --ios-orange: #FF9500;
+  --ios-yellow: #FFCC00;
+  --ios-green:  #34C759;
+  --ios-teal:   #5AC8FA;
+  --ios-blue:   #007AFF;
+  --ios-indigo: #5856D6;
+  --ios-purple: #AF52DE;
+  --ios-pink:   #FF2D55;
+  --ios-gray:   #8E8E93;
+
+  /* Dark mode equivalents (warmer than iOS defaults) */
+  --night-900: #14130F;    /* base bg */
+  --night-800: #1F1D18;    /* grouped bg */
+  --night-700: #2A2722;    /* card */
+  --night-600: #3A3631;    /* hairline */
+  --bone-100:  #F2EEE5;    /* primary text on night */
+  --bone-300:  #C4BEB0;    /* secondary */
+  --bone-500:  #8E8979;    /* tertiary */
+
+  /* =====================================================================
+     SEMANTIC TOKENS — what you actually use in components.
+     ===================================================================== */
+
+  /* Surface */
+  --bg-app:         var(--paper-100);
+  --bg-grouped:     var(--paper-50);
+  --bg-card:        #FFFFFF;
+  --bg-elevated:    #FFFFFF;
+  --bg-overlay:     rgba(27, 26, 23, 0.32);   /* modal scrim */
+  --bg-frosted:     rgba(246, 242, 234, 0.78); /* nav bar over scroll */
+
+  /* Foreground (text + glyphs) */
+  --fg-1:           var(--ink-900);    /* primary */
+  --fg-2:           var(--ink-700);    /* secondary */
+  --fg-3:           var(--ink-500);    /* tertiary, captions */
+  --fg-4:           var(--ink-300);    /* quaternary / placeholder */
+  --fg-on-accent:   #FFFFFF;
+  --fg-link:        var(--terracotta-500);
+  --fg-ai:          var(--sage-700);   /* AI-suggested copy */
+
+  /* Edges */
+  --line-1:         var(--paper-300);   /* hairline divider (1px / 0.5px) */
+  --line-2:         var(--paper-200);   /* subtle group separator */
+  --line-strong:    var(--ink-300);     /* outlined input */
+
+  /* Action */
+  --accent:               var(--terracotta-500);
+  --accent-pressed:       var(--terracotta-700);
+  --accent-soft:          var(--terracotta-50);   /* tag / chip bg */
+  --accent-on:            #FFFFFF;
+  --destructive:          var(--ios-red);
+  --selection:            rgba(196, 106, 61, 0.18); /* text selection */
+
+  /* AI / connection tint */
+  --ai-tint:              var(--sage-500);
+  --ai-tint-soft:         var(--sage-100);
+
+  /* =====================================================================
+     TYPOGRAPHY — families
+     ===================================================================== */
+  --font-display: "Newsreader", "New York", ui-serif, Georgia, serif;
+  --font-ui:      "Pretendard Variable", "Pretendard", "Geist",
+                  -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                  "Apple SD Gothic Neo", "Segoe UI", sans-serif;
+  --font-mono:    "Geist Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  /* iOS HIG type scale, in px — used 1:1 in the mobile UI kit. */
+  --t-largeTitle:   34px;  --lh-largeTitle: 41px;  --ls-largeTitle: 0.374px;
+  --t-title1:       28px;  --lh-title1:     34px;  --ls-title1:     0.364px;
+  --t-title2:       22px;  --lh-title2:     28px;  --ls-title2:     0.352px;
+  --t-title3:       20px;  --lh-title3:     25px;  --ls-title3:     0.380px;
+  --t-headline:     17px;  --lh-headline:   22px;  --ls-headline:  -0.408px;
+  --t-body:         17px;  --lh-body:       22px;  --ls-body:      -0.408px;
+  --t-callout:      16px;  --lh-callout:    21px;  --ls-callout:   -0.320px;
+  --t-subheadline:  15px;  --lh-subheadline:20px;  --ls-subheadline:-0.240px;
+  --t-footnote:     13px;  --lh-footnote:   18px;  --ls-footnote:  -0.078px;
+  --t-caption1:     12px;  --lh-caption1:   16px;  --ls-caption1:   0px;
+  --t-caption2:     11px;  --lh-caption2:   13px;  --ls-caption2:   0.066px;
+
+  /* Editorial scale — used on marketing surfaces, note titles, empty states */
+  --t-hero:         56px;  --lh-hero:       60px;
+  --t-display:      40px;  --lh-display:    44px;
+
+  /* =====================================================================
+     SPACING — 4px base. Use the named scale, not the raw numbers.
+     ===================================================================== */
+  --s-0:   0px;
+  --s-px:  1px;
+  --s-1:   4px;
+  --s-2:   8px;
+  --s-3:   12px;
+  --s-4:   16px;     /* gutter (iOS standard horizontal margin) */
+  --s-5:   20px;
+  --s-6:   24px;
+  --s-8:   32px;
+  --s-10:  40px;
+  --s-12:  48px;
+  --s-16:  64px;
+  --s-20:  80px;
+
+  /* =====================================================================
+     RADII — gentle, never sharp. iOS-derived.
+     ===================================================================== */
+  --r-xs:  4px;     /* tag, pill inset */
+  --r-sm:  8px;     /* tag chip */
+  --r-md:  10px;    /* iOS standard control */
+  --r-lg:  14px;    /* card */
+  --r-xl:  20px;    /* sheet */
+  --r-full: 999px;
+
+  /* iOS-specific */
+  --r-ios-app:   22.37%;   /* squircle ratio for app icons (54px / 60px) */
+  --r-ios-card:  10px;
+  --r-ios-modal: 14px;
+
+  /* =====================================================================
+     SHADOWS — restrained. Mull leans on hairlines over drop shadows.
+     ===================================================================== */
+  --shadow-hairline:  0 0 0 0.5px var(--line-1);
+  --shadow-card:      0 1px 2px rgba(27, 26, 23, 0.04),
+                      0 2px 8px rgba(27, 26, 23, 0.04);
+  --shadow-sheet:     0 -2px 24px rgba(27, 26, 23, 0.08);
+  --shadow-pop:       0 8px 24px rgba(27, 26, 23, 0.12),
+                      0 1px 2px rgba(27, 26, 23, 0.08);
+  --shadow-floating:  0 12px 40px rgba(27, 26, 23, 0.18);
+
+  /* =====================================================================
+     MOTION
+     ===================================================================== */
+  --ease-standard: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-ios:      cubic-bezier(0.32, 0.72, 0, 1);   /* native sheet feel */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast:   120ms;
+  --dur-base:   220ms;
+  --dur-slow:   360ms;
+
+  /* =====================================================================
+     LAYOUT
+     ===================================================================== */
+  --w-iphone:        390px;     /* iPhone 14/15 logical width */
+  --safe-top:        59px;      /* status bar + dynamic island clearance */
+  --safe-bottom:     34px;      /* home indicator */
+  --tab-bar-h:       83px;
+  --nav-bar-h:       44px;
+  --nav-bar-large-h: 96px;      /* large-title nav */
+}
+
+/* =========================================================================
+   SEMANTIC ELEMENT STYLES
+   Drop a class on a span/heading to get the right type style.
+   ========================================================================= */
+
+.t-largeTitle   { font: 700 var(--t-largeTitle)/var(--lh-largeTitle) var(--font-ui);
+                  letter-spacing: var(--ls-largeTitle); color: var(--fg-1); }
+.t-title1       { font: 700 var(--t-title1)/var(--lh-title1) var(--font-ui);
+                  letter-spacing: var(--ls-title1); color: var(--fg-1); }
+.t-title2       { font: 700 var(--t-title2)/var(--lh-title2) var(--font-ui);
+                  letter-spacing: var(--ls-title2); color: var(--fg-1); }
+.t-title3       { font: 600 var(--t-title3)/var(--lh-title3) var(--font-ui);
+                  letter-spacing: var(--ls-title3); color: var(--fg-1); }
+.t-headline     { font: 600 var(--t-headline)/var(--lh-headline) var(--font-ui);
+                  letter-spacing: var(--ls-headline); color: var(--fg-1); }
+.t-body         { font: 400 var(--t-body)/var(--lh-body) var(--font-ui);
+                  letter-spacing: var(--ls-body); color: var(--fg-1); }
+.t-callout      { font: 400 var(--t-callout)/var(--lh-callout) var(--font-ui);
+                  letter-spacing: var(--ls-callout); color: var(--fg-1); }
+.t-subheadline  { font: 400 var(--t-subheadline)/var(--lh-subheadline) var(--font-ui);
+                  letter-spacing: var(--ls-subheadline); color: var(--fg-2); }
+.t-footnote     { font: 400 var(--t-footnote)/var(--lh-footnote) var(--font-ui);
+                  letter-spacing: var(--ls-footnote); color: var(--fg-3); }
+.t-caption1     { font: 400 var(--t-caption1)/var(--lh-caption1) var(--font-ui);
+                  letter-spacing: var(--ls-caption1); color: var(--fg-3); }
+.t-caption2     { font: 400 var(--t-caption2)/var(--lh-caption2) var(--font-ui);
+                  letter-spacing: var(--ls-caption2); color: var(--fg-3); }
+
+.t-display      { font: 300 var(--t-display)/var(--lh-display) var(--font-display);
+                  letter-spacing: -0.02em; color: var(--fg-1); }
+.t-hero         { font: 300 var(--t-hero)/var(--lh-hero) var(--font-display);
+                  letter-spacing: -0.025em; color: var(--fg-1); }
+
+.t-mono         { font-family: var(--font-mono); font-size: 13px;
+                  letter-spacing: 0; }
+.t-ai           { color: var(--fg-ai); font-style: italic;
+                  font-family: var(--font-display); }
+
+/* Wordmark — the brand */
+.t-wordmark {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: var(--fg-1);
+}

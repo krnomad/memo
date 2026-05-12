@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .row2 { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .swatch { aspect-ratio: 1.2 / 1; border-radius: 10px; padding: 10px;
+            display: flex; flex-direction: column; justify-content: flex-end;
+            box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.06); }
+  .name { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.92); }
+  .hex  { font-family: var(--font-mono); font-size: 10px; color: rgba(255,255,255,0.65); }
+  .light .name { color: var(--fg-2); }
+  .light .hex { color: var(--fg-3); }
+  .lbl { font-family: var(--font-ui); font-size: 11px; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.1em; margin: 8px 4px 6px; }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:18px 20px;">
+  <div class="lbl">Terracotta · brand accent</div>
+  <div class="row2">
+    <div class="swatch light" style="background:var(--terracotta-50)"> <div class="name">t-50</div><div class="hex">#FBEFE6</div></div>
+    <div class="swatch light" style="background:var(--terracotta-100)"><div class="name">t-100</div><div class="hex">#F4D6BE</div></div>
+    <div class="swatch"       style="background:var(--terracotta-300)"><div class="name">t-300</div><div class="hex">#DC9A6A</div></div>
+    <div class="swatch"       style="background:var(--terracotta-500)"><div class="name">t-500 · accent</div><div class="hex">#C46A3D</div></div>
+    <div class="swatch"       style="background:var(--terracotta-700)"><div class="name">t-700 · pressed</div><div class="hex">#8E4A28</div></div>
+    <div class="swatch"       style="background:var(--terracotta-900)"><div class="name">t-900</div><div class="hex">#4E2814</div></div>
+  </div>
+  <div class="lbl">Sage · AI tint (use sparingly)</div>
+  <div class="row2">
+    <div class="swatch light" style="background:var(--sage-100)"><div class="name">sage-100</div><div class="hex">#DDE5D6</div></div>
+    <div class="swatch"       style="background:var(--sage-300)"><div class="name">sage-300</div><div class="hex">#9AB089</div></div>
+    <div class="swatch"       style="background:var(--sage-500)"><div class="name">sage-500</div><div class="hex">#6E8B5A</div></div>
+    <div class="swatch"       style="background:var(--sage-700)"><div class="name">sage-700</div><div class="hex">#4A6139</div></div>
+    <div class="swatch" style="background:transparent;box-shadow:none"></div>
+    <div class="swatch" style="background:transparent;box-shadow:none"></div>
+  </div>
+</div>
+</body></html>

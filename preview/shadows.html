@@ -1,0 +1,36 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; padding: 8px; }
+  .cell { background: var(--paper-100); border-radius: 14px; padding: 22px 16px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .box { width: 90px; height: 64px; background: #fff; border-radius: 10px; }
+  .name { font-family: var(--font-mono); font-size: 11px; color: var(--fg-2); }
+  .desc { font-family: var(--font-ui); font-size: 11px; color: var(--fg-3); text-align: center; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:14px;">
+  <div class="row">
+    <div class="cell">
+      <div class="box" style="box-shadow: var(--shadow-hairline)"></div>
+      <div class="name">shadow-hairline</div>
+      <div class="desc">0.5px ring · borderless cards</div>
+    </div>
+    <div class="cell">
+      <div class="box" style="box-shadow: var(--shadow-card)"></div>
+      <div class="name">shadow-card</div>
+      <div class="desc">2-layer subtle · note cards</div>
+    </div>
+    <div class="cell">
+      <div class="box" style="box-shadow: var(--shadow-pop)"></div>
+      <div class="name">shadow-pop</div>
+      <div class="desc">popovers, menus, action sheets</div>
+    </div>
+    <div class="cell">
+      <div class="box" style="box-shadow: var(--shadow-floating)"></div>
+      <div class="name">shadow-floating</div>
+      <div class="desc">FAB · ambient floats</div>
+    </div>
+  </div>
+</div>
+</body></html>

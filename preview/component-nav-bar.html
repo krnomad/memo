@@ -1,0 +1,61 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .device { background: var(--paper-100); border-radius: 12px; padding-bottom: 12px; }
+  .status-bar {
+    height: 44px; display:flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; font: 600 17px/22px var(--font-ui); color: var(--fg-1);
+  }
+  .status-bar .glyphs { display: flex; gap: 6px; align-items: center; color: var(--fg-1); }
+  .nav-bar-large {
+    padding: 8px 16px 8px; display: flex; align-items: flex-end; justify-content: space-between;
+  }
+  .nav-bar-large .title { font: 700 34px/41px var(--font-ui); letter-spacing: 0.37px; color: var(--fg-1); }
+  .nav-bar-large .actions { display: flex; gap: 16px; }
+  .nav-bar-large .actions button {
+    border: 0; background: transparent; padding: 0; color: var(--accent);
+    font: 400 17px/22px var(--font-ui); cursor: pointer;
+  }
+  .nav-bar-large .icon-btn { color: var(--accent); }
+  .search {
+    margin: 8px 16px 0;
+    background: var(--paper-200); border-radius: 10px;
+    display: flex; gap: 8px; align-items: center; padding: 7px 10px;
+  }
+  .search input { border:0; outline:0; flex:1; background: transparent;
+    font: 400 17px/22px var(--font-ui); letter-spacing: -0.4px; }
+  .search input::placeholder { color: var(--fg-3); }
+  .search svg { color: var(--fg-3); }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); margin: 0 0 8px; }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:16px;">
+  <div class="lbl">large title nav · status bar · search</div>
+  <div class="device">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="glyphs">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor"><rect x="0" y="6" width="3" height="4" rx="0.5"/><rect x="4.5" y="4" width="3" height="6" rx="0.5"/><rect x="9" y="2" width="3" height="8" rx="0.5"/><rect x="13.5" y="0" width="3" height="10" rx="0.5"/></svg>
+          <svg width="17" height="11" viewBox="0 0 17 11" fill="none" stroke="currentColor" stroke-width="1.2"><path d="M2 4.5C5 1.5 12 1.5 15 4.5M4.5 7C6 5.5 11 5.5 12.5 7M7 9.5c.5-.7 2.5-.7 3 0" stroke-linecap="round"/></svg>
+          <svg width="27" height="12" viewBox="0 0 27 12" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="0.5" y="0.5" width="22" height="11" rx="3"/><rect x="2" y="2" width="19" height="8" rx="1.5" fill="currentColor"/><rect x="23.5" y="3.5" width="2" height="5" rx="0.5" fill="currentColor"/></svg>
+      </span>
+    </div>
+    <div class="nav-bar-large">
+      <span class="title">Notes</span>
+      <div class="actions">
+        <button class="icon-btn" aria-label="Voice">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+        </button>
+        <button class="icon-btn" aria-label="Compose">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7"/><path d="M18 2l4 4-10 10H8v-4z"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input placeholder="Search">
+    </div>
+  </div>
+</div>
+</body></html>

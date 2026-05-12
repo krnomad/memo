@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .tabbar {
+    display: flex; justify-content: space-around;
+    background: rgba(246, 242, 234, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 0.5px solid var(--line-1);
+    padding: 8px 0 24px;
+  }
+  .tab {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    border: 0; background: transparent; cursor: pointer; color: var(--fg-3); padding: 4px 8px;
+    font: 500 10px/13px var(--font-ui); letter-spacing: 0.06em;
+  }
+  .tab.active { color: var(--accent); }
+  .tab svg { width: 26px; height: 26px; }
+  .device {
+    background: var(--paper-100);
+    border-radius: 14px;
+    padding-top: 60px;
+    box-shadow: inset 0 0 0 0.5px var(--line-1);
+  }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:16px;">
+  <div class="lbl">tab bar · frosted over paper · iPhone X+ form factor</div>
+  <div class="device">
+    <div class="tabbar">
+      <button class="tab active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h12l4 4v12H4z"/><path d="M4 8h16"/></svg>
+        Notes
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 3H5a2 2 0 0 0-2 2v14l4-4h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/></svg>
+        Journal
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 10l-7.5 2.5L12 20l-2.5-7.5L2 10l7.5-2.5z"/></svg>
+        Mull
+      </button>
+      <button class="tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+        You
+      </button>
+    </div>
+  </div>
+</div>
+</body></html>

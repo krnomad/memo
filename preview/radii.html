@@ -1,0 +1,23 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .row { display: flex; gap: 28px; align-items: flex-end; }
+  .cell { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .box { width: 60px; height: 60px; background: var(--paper-200); box-shadow: inset 0 0 0 0.5px var(--line-1); }
+  .name { font-family: var(--font-mono); font-size: 10px; color: var(--fg-2); }
+  .val  { font-family: var(--font-mono); font-size: 10px; color: var(--fg-4); }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:24px;">
+  <div class="row">
+    <div class="cell"><div class="box" style="border-radius:4px"></div>  <div class="name">r-xs</div><div class="val">4</div></div>
+    <div class="cell"><div class="box" style="border-radius:8px"></div>  <div class="name">r-sm</div><div class="val">8</div></div>
+    <div class="cell"><div class="box" style="border-radius:10px"></div> <div class="name">r-md</div><div class="val">10 · control</div></div>
+    <div class="cell"><div class="box" style="border-radius:14px"></div> <div class="name">r-lg</div><div class="val">14 · card</div></div>
+    <div class="cell"><div class="box" style="border-radius:20px"></div> <div class="name">r-xl</div><div class="val">20</div></div>
+    <div class="cell"><div class="box" style="border-radius:999px"></div><div class="name">r-full</div><div class="val">pill</div></div>
+    <div class="cell"><div class="box" style="border-radius:22.37%; background:var(--terracotta-500);box-shadow:none"></div><div class="name">ios-app</div><div class="val">squircle</div></div>
+  </div>
+</div>
+</body></html>

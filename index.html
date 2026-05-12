@@ -1,0 +1,1030 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>흘려쓰기 · Find Later iOS MVP mockup</title>
+  <link rel="stylesheet" href="./colors_and_type.css">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #e9e1d1;
+      color: var(--fg-1);
+      font-family: var(--font-ui);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+
+    .canvas {
+      min-width: 1920px;
+      min-height: 1060px;
+      padding: 40px 52px 58px;
+      background:
+        linear-gradient(rgba(27, 26, 23, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(27, 26, 23, 0.035) 1px, transparent 1px),
+        #e9e1d1;
+      background-size: 32px 32px;
+    }
+    .canvas-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 32px;
+      margin-bottom: 34px;
+    }
+    .brand-kicker {
+      color: var(--fg-3);
+      font: 500 13px/18px var(--font-ui);
+      letter-spacing: 0;
+      margin-bottom: 8px;
+    }
+    .canvas-title {
+      margin: 0;
+      color: var(--fg-1);
+      font: 700 38px/44px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .canvas-title em {
+      color: var(--accent);
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-style: italic;
+    }
+    .canvas-copy {
+      max-width: 520px;
+      color: var(--fg-2);
+      font: 400 16px/24px var(--font-ui);
+      letter-spacing: 0;
+      margin: 0;
+      text-align: right;
+    }
+    .screens {
+      display: grid;
+      grid-template-columns: repeat(4, 440px);
+      gap: 28px;
+      align-items: start;
+    }
+    .artboard-label {
+      height: 30px;
+      padding-left: 6px;
+      color: rgba(58, 56, 51, 0.72);
+      font: 600 13px/18px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .phone {
+      width: 390px;
+      height: 844px;
+      margin: 0 auto;
+      border-radius: 54px;
+      background: var(--ink-900);
+      padding: 11px;
+      box-shadow: 0 30px 80px rgba(27, 26, 23, 0.18), 0 0 0 1px rgba(27, 26, 23, 0.08);
+      position: relative;
+    }
+    .phone::before {
+      content: "";
+      position: absolute;
+      z-index: 40;
+      top: 22px;
+      left: 50%;
+      width: 122px;
+      height: 36px;
+      border-radius: var(--r-full);
+      background: #0c0b09;
+      transform: translateX(-50%);
+    }
+    .phone::after {
+      content: "";
+      position: absolute;
+      z-index: 40;
+      bottom: 19px;
+      left: 50%;
+      width: 134px;
+      height: 5px;
+      border-radius: var(--r-full);
+      background: var(--ink-900);
+      opacity: 0.85;
+      transform: translateX(-50%);
+    }
+    .screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 43px;
+      overflow: hidden;
+      background: var(--bg-app);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+    .status-bar {
+      height: 44px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--fg-1);
+      font: 600 17px/22px var(--font-ui);
+      letter-spacing: 0;
+      flex: 0 0 auto;
+    }
+    .status-icons { display: inline-flex; align-items: center; gap: 6px; }
+    .nav-large { padding: 8px 20px 12px; flex: 0 0 auto; }
+    .nav-row {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .wordmark {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--accent);
+      letter-spacing: 0;
+    }
+    .nav-title {
+      margin: 4px 0 0;
+      color: var(--fg-1);
+      font: 700 32px/38px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .nav-sub {
+      margin-top: 2px;
+      color: var(--fg-3);
+      font: 400 15px/20px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .nav-compact {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      flex: 0 0 auto;
+    }
+    .plain-btn {
+      border: 0;
+      background: transparent;
+      color: var(--accent);
+      padding: 6px;
+      cursor: pointer;
+      font: 500 17px/22px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .plain-btn:disabled { color: var(--fg-4); cursor: default; }
+    .icon-button {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: var(--r-md);
+      background: transparent;
+      color: var(--fg-2);
+      cursor: pointer;
+    }
+    .search-field {
+      margin: 4px 16px 0;
+      background: var(--paper-200);
+      border-radius: var(--r-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      min-height: 38px;
+    }
+    .search-field input {
+      min-width: 0;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--fg-1);
+      font: 400 17px/22px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .search-field input::placeholder, textarea::placeholder { color: var(--fg-4); opacity: 1; }
+    .content {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      padding: 16px 16px 120px;
+      scrollbar-width: none;
+    }
+    .content::-webkit-scrollbar { display: none; }
+    .section-label {
+      padding: 8px 4px 10px;
+      color: var(--fg-3);
+      font: 600 13px/16px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .home-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .note-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      padding: 14px 16px;
+      box-shadow: var(--shadow-card);
+    }
+    .note-card.ai-pending { padding-right: 24px; }
+    .ai-dot {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ai-tint);
+      box-shadow: 0 0 0 3px var(--ai-tint-soft);
+    }
+    .note-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .note-title {
+      color: var(--fg-1);
+      font: 600 16px/22px var(--font-ui);
+      letter-spacing: 0;
+      min-width: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .note-date {
+      flex: 0 0 auto;
+      color: var(--fg-3);
+      font: 400 12px/16px var(--font-ui);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .note-preview {
+      color: var(--fg-3);
+      font: 400 14px/20px var(--font-ui);
+      letter-spacing: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .tag-chip, .category-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      border: 0;
+      border-radius: var(--r-full);
+      padding: 3px 9px;
+      color: var(--fg-2);
+      background: var(--paper-200);
+      font: 500 12px/16px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .tag-chip.interactive, .category-row, .category-choice { cursor: pointer; }
+    .tag-chip.active, .category-choice.active {
+      background: var(--accent-soft);
+      color: var(--terracotta-700);
+    }
+    .category-chip {
+      background: transparent;
+      padding-left: 0;
+    }
+    .cat-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 2px;
+      background: var(--fg-3);
+      flex: 0 0 auto;
+    }
+    .fab {
+      position: absolute;
+      z-index: 20;
+      right: 18px;
+      bottom: 100px;
+      width: 60px;
+      height: 60px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--accent);
+      color: var(--fg-on-accent);
+      box-shadow: var(--shadow-floating);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .tab-bar {
+      position: absolute;
+      z-index: 12;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 83px;
+      padding: 8px 0 24px;
+      display: flex;
+      justify-content: space-around;
+      background: rgba(246, 242, 234, 0.88);
+      border-top: 0.5px solid var(--line-1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+    .tab {
+      min-width: 70px;
+      border: 0;
+      background: transparent;
+      color: var(--fg-3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 4px 12px;
+      font: 500 10px/13px var(--font-ui);
+      letter-spacing: 0;
+      cursor: pointer;
+    }
+    .tab.active { color: var(--accent); }
+
+    .compose-body {
+      flex: 1;
+      min-height: 0;
+      padding: 8px 22px 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .compose-text {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      resize: none;
+      background: transparent;
+      color: var(--fg-1);
+      caret-color: var(--accent);
+      padding: 8px 0 0;
+      font: 400 19px/30px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .char-count {
+      padding: 4px 0 8px;
+      text-align: right;
+      color: var(--fg-4);
+      font: 400 11px/14px var(--font-mono);
+      letter-spacing: 0;
+    }
+    .compose-meta {
+      border-top: 0.5px solid var(--line-1);
+      padding: 10px 0 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 24px;
+    }
+    .meta-label {
+      width: 58px;
+      flex: 0 0 auto;
+      color: var(--fg-3);
+      font: 400 13px/18px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .tag-input {
+      min-width: 70px;
+      flex: 1;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--fg-2);
+      font: 500 12px/16px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .category-choices {
+      display: flex;
+      gap: 6px;
+      overflow: hidden;
+      padding-left: 66px;
+      margin-top: -4px;
+    }
+    .category-choice {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      border: 0;
+      border-radius: var(--r-full);
+      background: var(--paper-200);
+      color: var(--fg-2);
+      padding: 4px 10px;
+      font: 500 12px/16px var(--font-ui);
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .ai-inline {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-left: 66px;
+      margin-top: -3px;
+      color: var(--ai-tint);
+      font: 400 12px/16px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .keyboard {
+      flex: 0 0 auto;
+      background: #d4d7de;
+      padding: 6px 3px 8px;
+    }
+    .key-row { display: flex; gap: 5px; padding: 0 3px; margin-bottom: 11px; }
+    .key-row.indent { padding: 0 22px; }
+    .key {
+      height: 42px;
+      flex: 1;
+      border-radius: 5px;
+      background: #fff;
+      color: var(--fg-1);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.28);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font: 400 22px/22px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .key.dark { background: #adb3bd; }
+    .key.wide { flex: 1.4; }
+    .key.extra { flex: 1.4; font-size: 16px; }
+    .key.huge { flex: 4; font-size: 16px; }
+    .key.return { background: var(--accent); color: white; font-size: 18px; }
+
+    .group-card {
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      box-shadow: inset 0 0 0 0.5px var(--line-1);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .category-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      border-bottom: 0.5px solid var(--line-1);
+    }
+    .category-row:last-child { border-bottom: 0; }
+    .category-name {
+      flex: 1;
+      color: var(--fg-1);
+      font: 400 16px/22px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .category-count {
+      color: var(--fg-3);
+      font: 400 15px/20px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 14px;
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      box-shadow: inset 0 0 0 0.5px var(--line-1);
+    }
+    .tag-cloud .tag-chip { background: var(--paper-100); }
+    .tag-chip.lg { font-size: 16px; line-height: 22px; padding: 7px 14px; }
+    .tag-chip.md { font-size: 14px; line-height: 20px; padding: 6px 12px; }
+    .tag-chip.sm { font-size: 13px; line-height: 18px; padding: 5px 10px; }
+    .filter-result {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .ai-banner {
+      margin-top: 24px;
+      background: var(--ai-tint-soft);
+      border-radius: var(--r-lg);
+      padding: 15px 18px;
+    }
+    .ai-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 7px;
+      color: var(--ai-tint);
+      font: 600 12px/16px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .ai-copy {
+      color: var(--fg-ai);
+      font: italic 400 15px/22px var(--font-display);
+      letter-spacing: 0;
+    }
+    .recent-list {
+      background: var(--bg-card);
+      border-radius: var(--r-lg);
+      box-shadow: inset 0 0 0 0.5px var(--line-1);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .recent-item {
+      width: 100%;
+      border: 0;
+      border-bottom: 0.5px solid var(--line-1);
+      background: transparent;
+      color: var(--fg-1);
+      padding: 11px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+      cursor: pointer;
+      font: 400 16px/22px var(--font-ui);
+      letter-spacing: 0;
+    }
+    .recent-item:last-child { border-bottom: 0; }
+    .search-results {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .result-count {
+      padding: 0 4px 12px;
+      color: var(--fg-3);
+      font: 400 13px/16px var(--font-ui);
+      letter-spacing: 0;
+    }
+    mark {
+      background: var(--terracotta-100);
+      color: var(--terracotta-900);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+  </style>
+</head>
+<body>
+  <main class="canvas" aria-label="흘려쓰기 iOS MVP design canvas">
+    <header class="canvas-header">
+      <div>
+        <div class="brand-kicker">iOS MVP mockup</div>
+        <h1 class="canvas-title">흘려쓰기 <em>Find Later</em></h1>
+      </div>
+      <p class="canvas-copy">아무렇게나 써도 나중에 찾을 수 있는 메모앱. 정리는 나중의 일로 두고, 지금은 원문과 최소한의 태그만 남깁니다.</p>
+    </header>
+
+    <section class="screens">
+      <article>
+        <div class="artboard-label">1. Home · 최근 메모</div>
+        <div class="phone"><div class="screen" id="home-screen"></div></div>
+      </article>
+      <article>
+        <div class="artboard-label">2. Compose · 빠른 작성</div>
+        <div class="phone"><div class="screen" id="compose-screen"></div></div>
+      </article>
+      <article>
+        <div class="artboard-label">3. Browse · 태그와 카테고리</div>
+        <div class="phone"><div class="screen" id="browse-screen"></div></div>
+      </article>
+      <article>
+        <div class="artboard-label">4. Search · 나중에 찾기</div>
+        <div class="phone"><div class="screen" id="search-screen"></div></div>
+      </article>
+    </section>
+  </main>
+
+  <template id="status-template">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="status-icons">
+        <svg width="17" height="11" viewBox="0 0 17 11" fill="currentColor" aria-hidden="true"><rect x="0" y="6.5" width="3" height="4" rx="0.5"/><rect x="4.5" y="4.5" width="3" height="6" rx="0.5"/><rect x="9" y="2.5" width="3" height="8" rx="0.5"/><rect x="13.5" y="0.5" width="3" height="10" rx="0.5"/></svg>
+        <svg width="16" height="11" viewBox="0 0 17 11" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" aria-hidden="true"><path d="M2 4.5C5 1.5 12 1.5 15 4.5"/><path d="M4.5 7C6 5.5 11 5.5 12.5 7"/><path d="M7 9.5c.5-.7 2.5-.7 3 0"/></svg>
+        <svg width="27" height="12" viewBox="0 0 27 12" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="0.5" y="0.5" width="22" height="11" rx="3"/><rect x="2" y="2" width="19" height="8" rx="1.5" fill="currentColor"/><rect x="23.5" y="3.5" width="2" height="5" rx="0.5" fill="currentColor"/></svg>
+      </span>
+    </div>
+  </template>
+
+  <script>
+    /*
+      AI-ready note shape for future integration:
+      {
+        id,
+        rawText,
+        title,
+        category,
+        tags,
+        createdAt,
+        updatedAt,
+        source: "manual",
+        aiStatus: "none" | "pending" | "done" | "failed",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null
+      }
+    */
+    const mockNotes = [
+      {
+        id: "note-001",
+        rawText: "내일 철수한테 전화하고 Growise 견적 다시 봐야함",
+        title: "Growise 견적 전화",
+        category: "업무",
+        tags: ["철수", "Growise", "견적", "연락"],
+        createdAt: "2026-05-13T09:14:00+09:00",
+        updatedAt: "2026-05-13T09:14:00+09:00",
+        source: "manual",
+        aiStatus: "pending",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null,
+        group: "오늘",
+        dateLabel: "방금"
+      },
+      {
+        id: "note-002",
+        rawText: "노트북 블루스크린 원인 찾아보기",
+        title: "노트북 블루스크린",
+        category: "문제해결",
+        tags: ["노트북", "블루스크린", "윈도우"],
+        createdAt: "2026-05-12T21:02:00+09:00",
+        updatedAt: "2026-05-12T21:02:00+09:00",
+        source: "manual",
+        aiStatus: "none",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null,
+        group: "이번 주",
+        dateLabel: "어제"
+      },
+      {
+        id: "note-003",
+        rawText: "AI 메모앱 MVP는 태그와 카테고리만 먼저 해도 괜찮을 듯",
+        title: "AI 메모앱 MVP 범위",
+        category: "아이디어",
+        tags: ["AI", "메모앱", "MVP"],
+        createdAt: "2026-05-11T16:30:00+09:00",
+        updatedAt: "2026-05-11T16:30:00+09:00",
+        source: "manual",
+        aiStatus: "none",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null,
+        group: "이번 주",
+        dateLabel: "월"
+      },
+      {
+        id: "note-004",
+        rawText: "주말에 부모님 뵙고 자동차 공기압 확인",
+        title: "주말 가족 일정",
+        category: "개인",
+        tags: ["가족", "자동차", "공기압"],
+        createdAt: "2026-05-09T11:48:00+09:00",
+        updatedAt: "2026-05-09T11:48:00+09:00",
+        source: "manual",
+        aiStatus: "done",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null,
+        group: "이번 주",
+        dateLabel: "토"
+      },
+      {
+        id: "note-005",
+        rawText: "서랍 안에 여권이랑 보조배터리 같이 넣어둠. 다음 여행 전에 확인.",
+        title: "여권 보관 위치",
+        category: "개인",
+        tags: ["여행", "여권", "보관"],
+        createdAt: "2026-05-05T18:20:00+09:00",
+        updatedAt: "2026-05-05T18:20:00+09:00",
+        source: "manual",
+        aiStatus: "none",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null,
+        group: "지난 주",
+        dateLabel: "5월 5일"
+      },
+      {
+        id: "note-006",
+        rawText: "책상 위 조명 너무 밝음. 전구 낮은 색온도로 바꾸면 집중 잘 될 듯.",
+        title: "책상 조명 바꾸기",
+        category: "아이디어",
+        tags: ["집", "조명", "집중"],
+        createdAt: "2026-05-03T22:44:00+09:00",
+        updatedAt: "2026-05-03T22:44:00+09:00",
+        source: "manual",
+        aiStatus: "none",
+        aiSuggestedTags: [],
+        aiSuggestedCategory: null,
+        group: "지난 주",
+        dateLabel: "5월 3일"
+      }
+    ];
+
+    const categoryColors = {
+      "업무": "var(--ios-blue)",
+      "문제해결": "var(--terracotta-700)",
+      "아이디어": "var(--accent)",
+      "개인": "var(--ink-500)",
+      "미분류": "var(--fg-3)"
+    };
+    const state = {
+      browseFilter: "cat:업무",
+      searchQuery: "Growise",
+      composeTags: ["견적"],
+      composeCategory: "업무"
+    };
+
+    const icon = {
+      search: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>',
+      pencil: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4z"/></svg>',
+      clock: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>',
+      grid: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+      doc: '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h11l4 4v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/><path d="M16 4v4h4"/></svg>',
+      sparkle: '<svg width="13" height="13" viewBox="0 0 24 24" fill="var(--ai-tint)" aria-hidden="true"><path d="M12 0l2.5 7.5L22 10l-7.5 2.5L12 20l-2.5-7.5L2 10l7.5-2.5z"/></svg>'
+    };
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" }[m]));
+    }
+    function statusBar() {
+      return document.getElementById("status-template").innerHTML;
+    }
+    function categoryChip(category) {
+      const color = categoryColors[category] || categoryColors["미분류"];
+      return `<span class="category-chip"><span class="cat-dot" style="background:${color}"></span>${escapeHtml(category)}</span>`;
+    }
+    function tagChip(tag, extra = "") {
+      return `<span class="tag-chip ${extra}">${escapeHtml(tag)}</span>`;
+    }
+    function noteCard(note) {
+      return `
+        <article class="note-card ${note.aiStatus === "pending" ? "ai-pending" : ""}">
+          ${note.aiStatus === "pending" ? '<span class="ai-dot" title="AI 분석 대기 중"></span>' : ""}
+          <div class="note-head">
+            <div class="note-title">${escapeHtml(note.title)}</div>
+            <time class="note-date">${escapeHtml(note.dateLabel)}</time>
+          </div>
+          <div class="note-preview">${escapeHtml(note.rawText)}</div>
+          <div class="chip-row">
+            ${categoryChip(note.category)}
+            ${note.tags.map((tag) => tagChip(tag)).join("")}
+          </div>
+        </article>`;
+    }
+    function searchField(id, placeholder, value = "") {
+      return `<label class="search-field" for="${id}">${icon.search}<input id="${id}" value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}"></label>`;
+    }
+    function tabBar(active) {
+      return `
+        <nav class="tab-bar" aria-label="하단 탭">
+          <button class="tab ${active === "home" ? "active" : ""}" type="button">${icon.doc}<span>최근</span></button>
+          <button class="tab ${active === "browse" ? "active" : ""}" type="button">${icon.grid}<span>탐색</span></button>
+          <button class="tab ${active === "search" ? "active" : ""}" type="button">${icon.search.replace("16", "26").replace("16", "26")}<span>검색</span></button>
+        </nav>`;
+    }
+    function renderHome() {
+      const groups = ["오늘", "이번 주", "지난 주"];
+      const html = `
+        ${statusBar()}
+        <div class="nav-large">
+          <div class="nav-row">
+            <span class="wordmark">Find Later</span>
+            <button class="icon-button" type="button" aria-label="더보기">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="12" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>
+            </button>
+          </div>
+          <h2 class="nav-title">흘려쓰기</h2>
+          <div class="nav-sub">대충 쓰고, 나중에 찾기</div>
+        </div>
+        ${searchField("home-search", "검색")}
+        <div class="content home-list">
+          ${groups.map((group) => {
+            const notes = mockNotes.filter((note) => note.group === group);
+            return `<div class="section-label">${group}</div>${notes.map(noteCard).join("")}`;
+          }).join("")}
+        </div>
+        <button class="fab" type="button" aria-label="새 메모">${icon.pencil}</button>
+        ${tabBar("home")}
+      `;
+      document.getElementById("home-screen").innerHTML = html;
+    }
+    function renderCompose() {
+      const categories = ["업무", "문제해결", "아이디어", "개인"];
+      const html = `
+        ${statusBar()}
+        <div class="nav-compact">
+          <button class="plain-btn" type="button">취소</button>
+          <button class="plain-btn" id="save-btn" type="button">저장</button>
+        </div>
+        <div class="compose-body">
+          <textarea class="compose-text" id="compose-text" placeholder="생각나는 걸 아무거나 적어보세요">내일 철수한테 전화하고 Growise 견적 다시 봐야함</textarea>
+          <div class="char-count" id="char-count">0자</div>
+          <div class="compose-meta">
+            <div class="meta-row">
+              <span class="meta-label">태그</span>
+              <div class="chip-row" id="compose-tags">${state.composeTags.map((tag) => tagChip(tag, "active")).join("")}</div>
+              <input class="tag-input" id="tag-draft" placeholder="직접 입력">
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">카테고리</span>
+              ${categoryChip(state.composeCategory)}
+            </div>
+            <div class="category-choices">
+              ${categories.map((cat) => `<button class="category-choice ${state.composeCategory === cat ? "active" : ""}" data-category="${escapeHtml(cat)}" type="button"><span class="cat-dot" style="background:${categoryColors[cat]}"></span>${escapeHtml(cat)}</button>`).join("")}
+            </div>
+            <div class="ai-inline">${icon.sparkle}<span>AI 태그 추천 예정. 지금은 수동으로만 저장됩니다.</span></div>
+          </div>
+        </div>
+        ${keyboard()}
+      `;
+      document.getElementById("compose-screen").innerHTML = html;
+      const textarea = document.getElementById("compose-text");
+      const count = document.getElementById("char-count");
+      const save = document.getElementById("save-btn");
+      const updateCount = () => {
+        count.textContent = `${textarea.value.length}자`;
+        save.disabled = textarea.value.trim().length === 0;
+      };
+      textarea.addEventListener("input", updateCount);
+      updateCount();
+      document.getElementById("tag-draft").addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === "," || event.key === " ") {
+          event.preventDefault();
+          const value = event.currentTarget.value.trim().replace(/^#/, "");
+          if (value && !state.composeTags.includes(value)) state.composeTags.push(value);
+          renderCompose();
+        }
+      });
+      document.querySelectorAll("#compose-screen [data-category]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.composeCategory = button.dataset.category;
+          renderCompose();
+        });
+      });
+    }
+    function keyboard() {
+      const row = (keys, extraClass = "") => `<div class="key-row ${extraClass}">${keys.map((k) => `<div class="key">${k}</div>`).join("")}</div>`;
+      return `
+        <div class="keyboard" aria-hidden="true">
+          ${row(["ㅂ","ㅈ","ㄷ","ㄱ","ㅅ","ㅛ","ㅕ","ㅑ","ㅐ","ㅔ"])}
+          ${row(["ㅁ","ㄴ","ㅇ","ㄹ","ㅎ","ㅗ","ㅓ","ㅏ","ㅣ"], "indent")}
+          <div class="key-row"><div class="key wide dark">⇧</div>${["ㅋ","ㅌ","ㅊ","ㅍ","ㅠ","ㅜ","ㅡ"].map((k) => `<div class="key">${k}</div>`).join("")}<div class="key wide dark">⌫</div></div>
+          <div class="key-row"><div class="key extra dark">123</div><div class="key extra dark">마이크</div><div class="key huge">한국어</div><div class="key extra return">return</div></div>
+        </div>`;
+    }
+    function renderBrowse() {
+      const categoryCounts = ["업무", "문제해결", "아이디어", "개인", "미분류"].map((name) => ({
+        name,
+        count: name === "미분류" ? 0 : mockNotes.filter((note) => note.category === name).length
+      }));
+      const tags = [...new Set(mockNotes.flatMap((note) => note.tags))].map((tag) => ({
+        tag,
+        count: mockNotes.filter((note) => note.tags.includes(tag)).length
+      }));
+      const filtered = filterNotes(state.browseFilter);
+      const label = state.browseFilter.replace("cat:", "").replace("tag:", "#");
+      const html = `
+        ${statusBar()}
+        <div class="nav-large">
+          <h2 class="nav-title">탐색</h2>
+          <div class="nav-sub">카테고리와 태그로 다시 보기</div>
+        </div>
+        <div class="content">
+          <div class="section-label">카테고리</div>
+          <div class="group-card">
+            ${categoryCounts.map((cat) => `
+              <button class="category-row" data-filter="cat:${escapeHtml(cat.name)}" type="button">
+                <span class="cat-dot" style="width:10px;height:10px;background:${categoryColors[cat.name]}"></span>
+                <span class="category-name">${escapeHtml(cat.name)}</span>
+                <span class="category-count">${cat.count}</span>
+              </button>`).join("")}
+          </div>
+          <div class="section-label">태그</div>
+          <div class="tag-cloud">
+            ${tags.map(({ tag, count }) => {
+              const size = count > 1 || tag.length <= 3 ? "md" : "sm";
+              const active = state.browseFilter === `tag:${tag}` ? "active" : "";
+              return `<button class="tag-chip interactive ${size} ${active}" data-filter="tag:${escapeHtml(tag)}" type="button">#${escapeHtml(tag)} <span style="opacity:.52;font-size:11px">${count}</span></button>`;
+            }).join("")}
+          </div>
+          <div class="filter-result">
+            <div class="section-label">${escapeHtml(label)} 메모</div>
+            ${filtered.map(noteCard).join("") || '<div class="note-preview">아직 해당 메모가 없습니다.</div>'}
+          </div>
+          <div class="ai-banner">
+            <div class="ai-label">${icon.sparkle}<span>곧 추가됩니다</span></div>
+            <div class="ai-copy">비슷한 메모끼리 자동으로 묶고, 카테고리를 추천하는 자리를 남겨뒀습니다.</div>
+          </div>
+        </div>
+        <button class="fab" type="button" aria-label="새 메모">${icon.pencil}</button>
+        ${tabBar("browse")}
+      `;
+      document.getElementById("browse-screen").innerHTML = html;
+      document.querySelectorAll("#browse-screen [data-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.browseFilter = button.dataset.filter;
+          renderBrowse();
+        });
+      });
+    }
+    function filterNotes(filter) {
+      if (!filter) return mockNotes;
+      if (filter.startsWith("cat:")) return mockNotes.filter((note) => note.category === filter.slice(4));
+      if (filter.startsWith("tag:")) return mockNotes.filter((note) => note.tags.includes(filter.slice(4)));
+      return mockNotes;
+    }
+    function renderSearch() {
+      const query = state.searchQuery;
+      const results = getSearchResults(query);
+      const html = `
+        ${statusBar()}
+        <div style="padding:8px 0 4px">${searchField("search-input", "메모 · 태그 · 카테고리 검색", query)}</div>
+        <div class="content" style="padding-top:12px">
+          <div id="search-empty" ${query ? 'style="display:none"' : ""}>
+            <div class="section-label">최근 검색</div>
+            <div class="recent-list">
+              ${["Growise", "블루스크린", "공기압", "MVP", "여권"].map((term) => `<button class="recent-item" data-search="${escapeHtml(term)}" type="button">${icon.clock}<span>${escapeHtml(term)}</span></button>`).join("")}
+            </div>
+            <div class="section-label">인기 태그</div>
+            <div class="chip-row">
+              ${["#견적", "#윈도우", "#메모앱", "#가족", "#여행"].map((tag) => `<button class="tag-chip interactive" data-search="${escapeHtml(tag.slice(1))}" type="button">${escapeHtml(tag)}</button>`).join("")}
+            </div>
+            <div class="ai-banner">
+              <div class="ai-label">${icon.sparkle}<span>곧 추가됩니다</span></div>
+              <div class="ai-copy">자연어 검색은 미래 기능입니다. 지금은 원문, 태그, 카테고리로만 찾습니다.</div>
+            </div>
+          </div>
+          <div id="search-results" ${!query ? 'style="display:none"' : ""}>
+            <div class="result-count">${results.length}개의 결과</div>
+            <div class="search-results">${results.map((note) => noteCardHighlighted(note, query)).join("")}</div>
+            <div class="ai-banner">
+              <div class="ai-label">${icon.sparkle}<span>나중에 붙일 자리</span></div>
+              <div class="ai-copy">“견적 다시 봐야 하는 일”처럼 묻는 검색은 아직 동작하지 않습니다.</div>
+            </div>
+          </div>
+        </div>
+        ${tabBar("search")}
+      `;
+      document.getElementById("search-screen").innerHTML = html;
+      const input = document.getElementById("search-input");
+      input.addEventListener("input", (event) => {
+        state.searchQuery = event.target.value.trim();
+        renderSearch();
+        const next = document.getElementById("search-input");
+        next.focus();
+        next.setSelectionRange(next.value.length, next.value.length);
+      });
+      document.querySelectorAll("#search-screen [data-search]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.searchQuery = button.dataset.search;
+          renderSearch();
+        });
+      });
+    }
+    function getSearchResults(query) {
+      if (!query) return [];
+      const q = query.toLowerCase();
+      return mockNotes.filter((note) => {
+        return [note.rawText, note.title, note.category, ...note.tags].join(" ").toLowerCase().includes(q);
+      });
+    }
+    function highlightText(text, query) {
+      if (!query) return escapeHtml(text);
+      const clean = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return escapeHtml(text).replace(new RegExp(`(${clean})`, "gi"), "<mark>$1</mark>");
+    }
+    function noteCardHighlighted(note, query) {
+      return `
+        <article class="note-card ${note.aiStatus === "pending" ? "ai-pending" : ""}">
+          ${note.aiStatus === "pending" ? '<span class="ai-dot" title="AI 분석 대기 중"></span>' : ""}
+          <div class="note-head">
+            <div class="note-title">${highlightText(note.title, query)}</div>
+            <time class="note-date">${escapeHtml(note.dateLabel)}</time>
+          </div>
+          <div class="note-preview">${highlightText(note.rawText, query)}</div>
+          <div class="chip-row">${categoryChip(note.category)}${note.tags.map((tag) => tagChip(tag)).join("")}</div>
+        </article>`;
+    }
+
+    renderHome();
+    renderCompose();
+    renderBrowse();
+    renderSearch();
+  </script>
+</body>
+</html>

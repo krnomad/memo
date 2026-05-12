@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>흘려쓰기 · iOS UI Kit</title>
+  <link rel="stylesheet" href="../../colors_and_type.css">
+  <style>
+    html, body {
+      margin: 0;
+      background: #EAE3D4;
+      font-family: var(--font-ui);
+      color: var(--fg-1);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .canvas-host { width: 100vw; height: 100vh; }
+    /* Override device shadow to land softer on the canvas paper backdrop */
+    .ab-screen-wrap { display: flex; align-items: center; justify-content: center; padding: 24px; }
+  </style>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root" class="canvas-host"></div>
+
+  <script type="text/babel" src="Components.jsx"></script>
+  <script type="text/babel" src="HomeScreen.jsx"></script>
+  <script type="text/babel" src="ComposeScreen.jsx"></script>
+  <script type="text/babel" src="BrowseScreen.jsx"></script>
+  <script type="text/babel" src="SearchScreen.jsx"></script>
+  <script type="text/babel" src="design-canvas.jsx"></script>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // Wrapper that handles the click-thru between Home → Compose → back
+    function HomeWithCompose() {
+      const [view, setView] = useState("home");   // home | compose
+      const [tab, setTab]   = useState("home");
+      if (view === "compose") return <ComposeScreen onClose={() => setView("home")} />;
+      return <HomeScreen
+        active={tab}
+        onTabChange={(t) => setTab(t)}
+        onCompose={() => setView("compose")}
+        onSearch={() => setTab("search")}
+      />;
+    }
+
+    function ScreenFrame({ children }) {
+      return (
+        <div className="ab-screen-wrap" style={{ width: "100%", height: "100%" }}>
+          <Phone>{children}</Phone>
+        </div>
+      );
+    }
+
+    function App() {
+      return (
+        <DesignCanvas
+          title="흘려쓰기 · Find Later"
+          subtitle="iOS MVP — 홈 / 작성 / 탐색 / 검색"
+        >
+          <DCSection id="screens" title="MVP 시안" subtitle="iPhone 14 · 390 × 844">
+            <DCArtboard id="home" label="1. 홈 — 최근 메모" width={440} height={894}>
+              <ScreenFrame><HomeWithCompose /></ScreenFrame>
+            </DCArtboard>
+
+            <DCArtboard id="compose" label="2. 빠른 메모 작성" width={440} height={894}>
+              <ScreenFrame>
+                <ComposeScreen onClose={() => {}} />
+              </ScreenFrame>
+            </DCArtboard>
+
+            <DCArtboard id="browse" label="3. 카테고리 · 태그 탐색" width={440} height={894}>
+              <ScreenFrame>
+                <BrowseScreen active="browse" onTabChange={() => {}} onCompose={() => {}} />
+              </ScreenFrame>
+            </DCArtboard>
+
+            <DCArtboard id="search" label="4. 검색" width={440} height={894}>
+              <ScreenFrame>
+                <SearchScreen active="search" onTabChange={() => {}} onCompose={() => {}} />
+              </ScreenFrame>
+            </DCArtboard>
+          </DCSection>
+
+          <DCPostIt top={130} left={40} rotate={-2.5}>
+            <div style={{ font: "600 13px var(--font-ui)", marginBottom: 4, color: "#3A3833" }}>UX 목표</div>
+            <div style={{ font: "400 12px/18px var(--font-ui)", color: "#3A3833" }}>
+              앱 실행 후 <b>3초 안에</b> 메모 작성을 시작할 수 있어야 합니다. FAB → 본문 → 끝.
+            </div>
+          </DCPostIt>
+
+          <DCPostIt top={520} left={40} rotate={2}>
+            <div style={{ font: "600 13px var(--font-ui)", marginBottom: 4, color: "#3A3833" }}>“대충 써도 된다”</div>
+            <div style={{ font: "400 12px/18px var(--font-ui)", color: "#3A3833" }}>
+              저장 버튼이 강조되지 않습니다. 글자 수도 잘 안 보입니다.
+              부담을 주지 않는 게 본문 영역의 일입니다.
+            </div>
+          </DCPostIt>
+
+          <DCPostIt top={300} right={40} rotate={1.5}>
+            <div style={{ font: "600 13px var(--font-ui)", marginBottom: 4, color: "#3A3833" }}>AI 영역</div>
+            <div style={{ font: "400 12px/18px var(--font-ui)", color: "#3A3833" }}>
+              MVP에서는 동작하지 않지만, 자리는 마련해뒀습니다.
+              카드 우측 상단의 <span style={{ display: "inline-flex", verticalAlign: "middle", width: 6, height: 6, borderRadius: "50%", background: "var(--ai-tint)", margin: "0 2px" }}/> 점,
+              작성 화면의 “곧 추천해드릴 거예요”, 탐색·검색 화면 하단 배너가 그 자리입니다.
+            </div>
+          </DCPostIt>
+
+          <DCPostIt top={720} right={40} rotate={-1.5}>
+            <div style={{ font: "600 13px var(--font-ui)", marginBottom: 4, color: "#3A3833" }}>나중에 찾기</div>
+            <div style={{ font: "400 12px/18px var(--font-ui)", color: "#3A3833" }}>
+              사용자는 정리하지 않습니다 — 카테고리는 <i>선택 안 함</i>이 기본,
+              태그는 <i>추가</i> 한 단어. 검색·태그 클라우드가 나중을 책임집니다.
+            </div>
+          </DCPostIt>
+        </DesignCanvas>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

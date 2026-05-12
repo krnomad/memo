@@ -1,0 +1,28 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 8px; }
+  .swatch { aspect-ratio: 1/1; border-radius: 8px; box-shadow: inset 0 0 0 0.5px rgba(0,0,0,0.05); position: relative; }
+  .name { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); text-align: center; margin-top: 6px; }
+  .hex  { font-family: var(--font-mono); font-size: 9px; color: var(--fg-4); text-align: center; margin-top: 2px; }
+  .cell { display: flex; flex-direction: column; }
+  .note { font-family: var(--font-ui); font-size: 11px; color: var(--fg-3); margin-bottom: 12px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:16px 20px;">
+  <div class="note">iOS system colors. Reserved for system chrome only — destructive actions, switches, native overlays. Primary UI uses the terracotta accent instead.</div>
+  <div class="grid">
+    <div class="cell"><div class="swatch" style="background:var(--ios-red)"></div>    <div class="name">red</div>   <div class="hex">FF3B30</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-orange)"></div> <div class="name">orange</div><div class="hex">FF9500</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-yellow)"></div> <div class="name">yellow</div><div class="hex">FFCC00</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-green)"></div>  <div class="name">green</div> <div class="hex">34C759</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-teal)"></div>   <div class="name">teal</div>  <div class="hex">5AC8FA</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-blue)"></div>   <div class="name">blue</div>  <div class="hex">007AFF</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-indigo)"></div> <div class="name">indigo</div><div class="hex">5856D6</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-purple)"></div> <div class="name">purple</div><div class="hex">AF52DE</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-pink)"></div>   <div class="name">pink</div>  <div class="hex">FF2D55</div></div>
+    <div class="cell"><div class="swatch" style="background:var(--ios-gray)"></div>   <div class="name">gray</div>  <div class="hex">8E8E93</div></div>
+  </div>
+</div>
+</body></html>

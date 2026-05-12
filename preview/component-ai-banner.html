@@ -1,0 +1,45 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="_preview.css">
+<style>
+  .banner {
+    background: var(--ai-tint-soft);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .banner .head { display: flex; align-items: center; gap: 8px; }
+  .banner .name {
+    font: 400 13px/18px var(--font-ui);
+    color: var(--ai-tint); letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .banner .prose {
+    font: 400 17px/24px var(--font-display);
+    font-style: italic;
+    color: var(--ink-900);
+  }
+  .banner .actions { display: flex; gap: 16px; align-items: center; }
+  .banner .actions button {
+    border: 0; background: transparent; padding: 0; cursor: pointer;
+    font: 600 15px/20px var(--font-ui); color: var(--ai-tint-strong, var(--sage-700));
+  }
+  .banner .actions .later { font-weight: 400; color: var(--fg-3); }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); margin-bottom: 8px; }
+  .sparkle { color: var(--ai-tint); }
+</style>
+</head>
+<body>
+<div class="preview" style="padding:20px 24px;">
+  <div class="lbl">AI suggestion · "Mull noticed" pattern</div>
+  <div class="banner">
+    <div class="head">
+      <svg class="sparkle" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0l2.5 7.5L22 10l-7.5 2.5L12 20l-2.5-7.5L2 10l7.5-2.5L12 0z"/></svg>
+      <span class="name">Mull noticed</span>
+    </div>
+    <div class="prose">Three notes from this week all mention the kitchen. Group them as a project?</div>
+    <div class="actions">
+      <button>Group them</button>
+      <button class="later">Maybe later</button>
+    </div>
+  </div>
+</div>
+</body></html>
