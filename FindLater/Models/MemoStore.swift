@@ -86,6 +86,11 @@ final class MemoStore {
         }
     }
 
+    func deleteMemo(id: Memo.ID) {
+        notes.removeAll { $0.id == id }
+        persist()
+    }
+
     func search(_ query: String) -> [Memo] {
         let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return [] }

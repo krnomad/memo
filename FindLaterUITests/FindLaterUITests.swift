@@ -25,6 +25,11 @@ final class FindLaterUITests: XCTestCase {
         app.buttons["저장"].tap()
 
         XCTAssertTrue(app.staticTexts["회의 끝나고 민지한테 데모 링크 보내기"].waitForExistence(timeout: 5))
+        let createdCard = app.buttons.containing(NSPredicate(format: "label CONTAINS %@", "회의 끝나고 민지한테 데모 링크 보내기")).firstMatch
+        XCTAssertTrue(createdCard.waitForExistence(timeout: 5))
+        createdCard.tap()
+        XCTAssertTrue(app.otherElements["memoDetail"].waitForExistence(timeout: 5))
+        app.buttons["닫기"].tap()
 
         app.tabBars.buttons["검색"].tap()
         let searchField = app.textFields["searchField"]
@@ -32,6 +37,7 @@ final class FindLaterUITests: XCTestCase {
         searchField.tap()
         searchField.typeText("민지")
         XCTAssertTrue(app.staticTexts["회의 끝나고 민지한테 데모 링크 보내기"].waitForExistence(timeout: 5))
+        app.keyboards.buttons["return"].tap()
 
         app.tabBars.buttons["탐색"].tap()
         XCTAssertTrue(app.buttons["category-업무"].waitForExistence(timeout: 5))

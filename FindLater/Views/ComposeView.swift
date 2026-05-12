@@ -106,6 +106,7 @@ struct ComposeView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("취소") {
+                        focusedField = nil
                         dismiss()
                     }
                     .foregroundStyle(MullTheme.terracotta)
@@ -113,12 +114,14 @@ struct ComposeView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button("저장") {
+                        focusedField = nil
                         addDraftTag()
                         _ = store.createMemo(rawText: rawText, tags: tags, category: category)
                         dismiss()
                     }
                     .disabled(rawText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                     .foregroundStyle(rawText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? MullTheme.inkDisabled : MullTheme.terracotta)
+                    .accessibilityLabel("저장")
                     .accessibilityIdentifier("saveMemoButton")
                 }
             }

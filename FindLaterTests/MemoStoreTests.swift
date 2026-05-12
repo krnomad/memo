@@ -46,6 +46,17 @@ final class MemoStoreTests: XCTestCase {
         XCTAssertTrue(store.notes.isEmpty)
         XCTAssertNil(storage.savedNotes)
     }
+
+    func testDeleteMemoRemovesNoteAndPersists() throws {
+        let storage = InMemoryStorage(notes: Memo.seed)
+        let store = MemoStore(storage: storage, seedIfEmpty: false)
+        let memo = try XCTUnwrap(store.notes.first)
+
+        store.deleteMemo(id: memo.id)
+
+        XCTAssertFalse(store.notes.contains { $0.id == memo.id })
+        XCTAssertFalse(try XCTUnwrap(storage.savedNotes).contains { $0.id == memo.id })
+    }
 }
 
 private final class InMemoryStorage: MemoStorage {

@@ -2,6 +2,8 @@ import SwiftUI
 
 struct NoteCard: View {
     let memo: Memo
+    var onOpen: (() -> Void)?
+    var onDelete: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -46,8 +48,106 @@ struct NoteCard: View {
                     .accessibilityLabel("AI 분석 대기 중")
             }
         }
+        .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .onTapGesture {
+            onOpen?()
+        }
+        .contextMenu {
+            if let onDelete {
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Label("삭제", systemImage: "trash")
+                }
+            }
+        }
         .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(onOpen == nil ? [] : .isButton)
         .accessibilityIdentifier("noteCard-\(memo.id.uuidString)")
+    }
+}
+
+struct MemoDetailView: View {
+    let memo: Memo
+    var onDelete: (() -> Void)?
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text(memo.title)
+                            .font(.title2.weight(.semibold))
+                            .foregroundStyle(MullTheme.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+
+                        Text(memo.createdAt.memoDateLabel)
+                            .font(.footnote)
+                            .foregroundStyle(MullTheme.inkTertiary)
+                    }
+
+                    Text(memo.rawText)
+                        .font(.system(size: 20, weight: .regular))
+                        .lineSpacing(5)
+                        .foregroundStyle(MullTheme.ink)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(18)
+                        .background(.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("분류")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(MullTheme.inkTertiary)
+
+                        FlowLayout(spacing: 7) {
+                            CategoryChip(category: memo.category)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(MullTheme.paperGrouped, in: Capsule())
+
+                            ForEach(memo.tags, id: \.self) { tag in
+                                TagChip(label: tag)
+                            }
+                        }
+                    }
+
+                    if memo.aiStatus == .pending {
+                        AIBanner(
+                            title: "AI 분석 대기 중",
+                            message: "나중에 자동 태그와 카테고리 추천을 붙일 자리입니다."
+                        )
+                    }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
+                .padding(.bottom, 36)
+            }
+            .background(MullTheme.paper)
+            .navigationTitle("메모")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("닫기") {
+                        dismiss()
+                    }
+                    .foregroundStyle(MullTheme.terracotta)
+                }
+
+                if let onDelete {
+                    ToolbarItem(placement: .primaryAction) {
+                        Button(role: .destructive) {
+                            onDelete()
+                            dismiss()
+                        } label: {
+                            Image(systemName: "trash")
+                        }
+                        .accessibilityLabel("삭제")
+                    }
+                }
+            }
+        }
+        .accessibilityIdentifier("memoDetail")
     }
 }
 
@@ -121,18 +221,32 @@ struct SearchBar: View {
     @Binding var text: String
     let placeholder: String
     let identifier: String
+    var focus: FocusState<Bool>.Binding? = nil
 
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(MullTheme.inkTertiary)
+            textField
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 9)
+        .background(MullTheme.paperGrouped, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+    }
+
+    @ViewBuilder
+    private var textField: some View {
+        if let focus {
+            TextField(placeholder, text: $text)
+                .textInputAutocapitalization(.never)
+                .autocorrectionDisabled()
+                .focused(focus)
+                .accessibilityIdentifier(identifier)
+        } else {
             TextField(placeholder, text: $text)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .accessibilityIdentifier(identifier)
         }
-        .padding(.horizontal, 10)
-        .padding(.vertical, 9)
-        .background(MullTheme.paperGrouped, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }

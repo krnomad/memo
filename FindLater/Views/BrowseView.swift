@@ -18,6 +18,7 @@ struct BrowseView: View {
     let store: MemoStore
     @Binding var activeSheet: ActiveSheet?
     @State private var filter: BrowseFilter
+    @State private var selectedMemo: Memo?
 
     init(store: MemoStore, activeSheet: Binding<ActiveSheet?>, initialFilter: BrowseFilter = .category(.work)) {
         self.store = store
@@ -59,6 +60,7 @@ struct BrowseView: View {
                                     }
                                     .padding(.horizontal, 16)
                                     .padding(.vertical, 13)
+                                    .background(filter == .category(category) ? MullTheme.terracottaSoft : .clear)
                                     .contentShape(Rectangle())
                                 }
                                 .buttonStyle(.plain)
@@ -90,7 +92,15 @@ struct BrowseView: View {
 
                         VStack(spacing: 10) {
                             ForEach(filteredNotes) { memo in
-                                NoteCard(memo: memo)
+                                NoteCard(
+                                    memo: memo,
+                                    onOpen: {
+                                        selectedMemo = memo
+                                    },
+                                    onDelete: {
+                                        store.deleteMemo(id: memo.id)
+                                    }
+                                )
                             }
                         }
 
@@ -121,6 +131,16 @@ struct BrowseView: View {
                 .padding(.bottom, 20)
             }
             .navigationTitle("탐색")
+            .sheet(item: $selectedMemo) { memo in
+                MemoDetailView(
+                    memo: memo,
+                    onDelete: {
+                        store.deleteMemo(id: memo.id)
+                        selectedMemo = nil
+                    }
+                )
+                .presentationDetents([.large])
+            }
         }
     }
 }

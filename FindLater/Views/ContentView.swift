@@ -22,6 +22,7 @@ struct ContentView: View {
     let launchConfiguration: LaunchConfiguration
     @State private var selectedTab: AppTab
     @State private var activeSheet: ActiveSheet?
+    private let tabOrder: [AppTab] = [.home, .browse, .search]
 
     init(store: MemoStore, launchConfiguration: LaunchConfiguration = LaunchConfiguration()) {
         self.store = store
@@ -32,7 +33,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView(store: store, activeSheet: $activeSheet, selectedTab: $selectedTab)
+            HomeView(store: store, activeSheet: $activeSheet)
                 .tabItem {
                     Label("최근", systemImage: "doc.text")
                 }
@@ -50,7 +51,11 @@ struct ContentView: View {
                 .tag(AppTab.browse)
                 .accessibilityIdentifier("browseTab")
 
-            SearchView(store: store, initialQuery: launchConfiguration.initialSearchQuery)
+            SearchView(
+                store: store,
+                activeSheet: $activeSheet,
+                initialQuery: launchConfiguration.initialSearchQuery
+            )
                 .tabItem {
                     Label("검색", systemImage: "magnifyingglass")
                 }
@@ -58,6 +63,15 @@ struct ContentView: View {
                 .accessibilityIdentifier("searchTab")
         }
         .tint(MullTheme.terracotta)
+        .simultaneousGesture(
+            DragGesture(minimumDistance: 42, coordinateSpace: .local)
+                .onEnded { value in
+                    let horizontal = value.translation.width
+                    let vertical = value.translation.height
+                    guard abs(horizontal) > 55, abs(horizontal) > abs(vertical) * 1.35 else { return }
+                    moveTab(by: horizontal < 0 ? 1 : -1)
+                }
+        )
         .sheet(item: $activeSheet) { sheet in
             switch sheet {
             case .compose:
@@ -69,5 +83,11 @@ struct ContentView: View {
                 activeSheet = .compose
             }
         }
+    }
+
+    private func moveTab(by offset: Int) {
+        guard let currentIndex = tabOrder.firstIndex(of: selectedTab) else { return }
+        let nextIndex = min(max(currentIndex + offset, tabOrder.startIndex), tabOrder.index(before: tabOrder.endIndex))
+        selectedTab = tabOrder[nextIndex]
     }
 }

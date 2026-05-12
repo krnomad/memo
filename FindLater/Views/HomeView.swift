@@ -3,23 +3,13 @@ import SwiftUI
 struct HomeView: View {
     let store: MemoStore
     @Binding var activeSheet: ActiveSheet?
-    @Binding var selectedTab: AppTab
-    @State private var homeSearchText = ""
+    @State private var selectedMemo: Memo?
 
     var body: some View {
         NavigationStack {
             ZStack(alignment: .bottomTrailing) {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 14) {
-                        SearchBar(
-                            text: $homeSearchText,
-                            placeholder: "검색",
-                            identifier: "homeSearchField"
-                        )
-                        .onSubmit {
-                            selectedTab = .search
-                        }
-
                         ForEach(store.recentGroups, id: \.title) { group in
                             VStack(alignment: .leading, spacing: 10) {
                                 Text(group.title)
@@ -28,16 +18,25 @@ struct HomeView: View {
                                     .padding(.horizontal, 4)
 
                                 ForEach(group.notes) { memo in
-                                    NoteCard(memo: memo)
+                                    NoteCard(
+                                        memo: memo,
+                                        onOpen: {
+                                            selectedMemo = memo
+                                        },
+                                        onDelete: {
+                                            store.deleteMemo(id: memo.id)
+                                        }
+                                    )
                                 }
                             }
                         }
                     }
                     .padding(.horizontal, 16)
-                    .padding(.top, 8)
+                    .padding(.top, 18)
                     .padding(.bottom, 110)
                 }
                 .background(MullTheme.paper)
+                .scrollDismissesKeyboard(.immediately)
 
                 Button {
                     activeSheet = .compose
@@ -54,13 +53,16 @@ struct HomeView: View {
                 .padding(.trailing, 18)
                 .padding(.bottom, 20)
             }
-            .navigationTitle("흘려쓰기")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Text("Find Later")
-                        .font(.custom("Newsreader", size: 17).italic())
-                        .foregroundStyle(MullTheme.terracotta)
-                }
+            .toolbar(.hidden, for: .navigationBar)
+            .sheet(item: $selectedMemo) { memo in
+                MemoDetailView(
+                    memo: memo,
+                    onDelete: {
+                        store.deleteMemo(id: memo.id)
+                        selectedMemo = nil
+                    }
+                )
+                .presentationDetents([.large])
             }
         }
     }
